@@ -1,0 +1,114 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* Header styles */
+header {
+    background-color: #f8f9fa;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2em;
+    color: #333;
+}
+
+header nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+}
+
+header nav ul li {
+    display: inline;
+    margin-right: 15px;
+}
+
+header nav ul li a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+header nav ul li a:hover {
+    text-decoration: underline;
+}
+
+
+/* Main body styles */
+main {
+    padding: 20px;
+    background-color: #f4f4f4;
+    min-height: 80vh; /* Ensures the main content takes up most of the viewport height */
+}
+
+
+/* Footer styles */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+footer nav ul {
+    list-style: none;
+    padding: 0;
+}
+footer nav ul li {
+    display: inline;
+    margin: 0 10px;
+}
+footer nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+footer nav ul li a:hover {
+    text-decoration: underline;
+}
+
+.button-list {
+    display: flex;
+    gap: 10px; /* Adjust the gap between buttons as needed */
+    margin-top: 10px;
+}
+
+.button-list button {
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin : 20px 10px;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.button-list button:hover {
+    background-color: #0056b3;
+}
+
+
+a {
+    color: #333;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+li {
+    list-style-type: none;
+}

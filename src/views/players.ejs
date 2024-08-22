@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/main.css">
+    <script src="/main.js" defer></script>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main>
+        <h1>Players</h1>
+        <!--Search bar-->
+        <div class="search-container">
+            <input id="searchInput" type="text" placeholder="Search for players...">
+            <button id="searchButtonPlayers">Search</button>
+        </div>
+        <div id="sort-button" class="button-list">
+            <button id="name">Name</button>
+            <button id="age">Age</button>
+            <button id="team">Team</button>
+            <button id="position">Position</button>
+        </div>
+    <%- include('partials/footer') %>
+
+    </main>
+</body>
+</html>

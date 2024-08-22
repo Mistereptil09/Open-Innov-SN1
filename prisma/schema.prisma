@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model awards {
+  award_id     Int            @id
+  name         String?        @unique(map: "name") @db.VarChar(255)
+  playerawards playerawards[]
+  teamawards   teamawards[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model contracts {
+  contract_id Int       @id
+  player_id   Int?
+  team_id     Int?
+  start_date  DateTime  @db.Date
+  end_date    DateTime? @db.Date
+  salary      Decimal?  @db.Decimal(10, 2)
+  players     players?  @relation(fields: [player_id], references: [player_id], onDelete: NoAction, onUpdate: NoAction, map: "contracts_ibfk_1")
+  teams       teams?    @relation(fields: [team_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "contracts_ibfk_2")
+
+  @@index([player_id], map: "player_id")
+  @@index([team_id], map: "team_id")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model matches {
+  match_id                      Int                        @id
+  match_date                    DateTime?                  @db.Date
+  winner                        String?                    @db.VarChar(255)
+  team1_id                      Int?
+  team2_id                      Int?
+  team1_score                   Int?
+  team2_score                   Int?
+  overtime                      Boolean?                   @default(false)
+  teams_matches_team1_idToteams teams?                     @relation("matches_team1_idToteams", fields: [team1_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "matches_ibfk_1")
+  teams_matches_team2_idToteams teams?                     @relation("matches_team2_idToteams", fields: [team2_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "matches_ibfk_2")
+  performance                   performance[]
+  playermatchparticipation      playermatchparticipation[]
+
+  @@index([team1_id], map: "team1_id")
+  @@index([team2_id], map: "team2_id")
+}
+
+model performance {
+  performance_id       Int         @id
+  player_team_id       Int?
+  match_id             Int?
+  play_time            Int?
+  shots_taken          Int?
+  shots_made           Int?
+  three_pointers_taken Int?
+  three_pointers_made  Int?
+  free_throws_taken    Int?
+  free_throws_made     Int?
+  defensive_rebounds   Int?
+  offensive_rebounds   Int?
+  assists              Int?
+  turnovers            Int?
+  personal_fouls       Int?
+  steals               Int?
+  blocks               Int?
+  team_id              Int?
+  playerteam           playerteam? @relation(fields: [player_team_id], references: [player_team_id], onDelete: NoAction, onUpdate: NoAction, map: "performance_ibfk_1")
+  matches              matches?    @relation(fields: [match_id], references: [match_id], onDelete: NoAction, onUpdate: NoAction, map: "performance_ibfk_2")
+  teams                teams?      @relation(fields: [team_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "performance_ibfk_3")
+
+  @@index([match_id], map: "match_id")
+  @@index([player_team_id], map: "player_team_id")
+  @@index([team_id], map: "team_id")
+}
+
+model playerawards {
+  player_award_id Int      @id
+  player_id       Int?
+  award_id        Int?
+  award_year      Int?     @db.Year
+  players         players? @relation(fields: [player_id], references: [player_id], onDelete: NoAction, onUpdate: NoAction, map: "playerawards_ibfk_1")
+  awards          awards?  @relation(fields: [award_id], references: [award_id], onDelete: NoAction, onUpdate: NoAction, map: "playerawards_ibfk_2")
+
+  @@index([award_id], map: "award_id")
+  @@index([player_id], map: "player_id")
+}
+
+model playermatchparticipation {
+  participation_id Int         @id
+  player_team_id   Int?
+  match_id         Int?
+  playerteam       playerteam? @relation(fields: [player_team_id], references: [player_team_id], onDelete: NoAction, onUpdate: NoAction, map: "playermatchparticipation_ibfk_1")
+  matches          matches?    @relation(fields: [match_id], references: [match_id], onDelete: NoAction, onUpdate: NoAction, map: "playermatchparticipation_ibfk_2")
+
+  @@index([match_id], map: "match_id")
+  @@index([player_team_id], map: "player_team_id")
+}
+
+model playerpositions {
+  position_id Int          @id
+  name        String?      @unique(map: "name") @db.VarChar(255)
+  playerteam  playerteam[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model players {
+  player_id    Int            @id
+  name         String         @db.VarChar(255)
+  birth_date   DateTime       @db.Date
+  weight       Decimal?       @db.Decimal(5, 2)
+  height       Decimal?       @db.Decimal(5, 2)
+  draft_year   Int?           @db.Year
+  origin       String?        @db.VarChar(255)
+  contracts    contracts[]
+  playerawards playerawards[]
+  playerteam   playerteam[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model playerteam {
+  player_team_id           Int                        @id
+  start_date               DateTime                   @db.Date
+  end_date                 DateTime?                  @db.Date
+  jersey_number            Int?
+  player_id                Int?
+  team_id                  Int?
+  position_id              Int?
+  salary                   Decimal?                   @db.Decimal(10, 2)
+  active                   Boolean?                   @default(true)
+  performance              performance[]
+  playermatchparticipation playermatchparticipation[]
+  players                  players?                   @relation(fields: [player_id], references: [player_id], onDelete: NoAction, onUpdate: NoAction, map: "playerteam_ibfk_1")
+  teams                    teams?                     @relation(fields: [team_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "playerteam_ibfk_2")
+  playerpositions          playerpositions?           @relation(fields: [position_id], references: [position_id], onDelete: NoAction, onUpdate: NoAction, map: "playerteam_ibfk_3")
+
+  @@index([player_id], map: "player_id")
+  @@index([position_id], map: "position_id")
+  @@index([team_id], map: "team_id")
+}
+
+model teamawards {
+  team_award_id Int     @id
+  team_id       Int?
+  award_id      Int?
+  award_year    Int?    @db.Year
+  teams         teams?  @relation(fields: [team_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "teamawards_ibfk_1")
+  awards        awards? @relation(fields: [award_id], references: [award_id], onDelete: NoAction, onUpdate: NoAction, map: "teamawards_ibfk_2")
+
+  @@index([award_id], map: "award_id")
+  @@index([team_id], map: "team_id")
+}
+
+model teams {
+  team_id                         Int                           @id
+  name                            String?                       @unique(map: "name") @db.VarChar(255)
+  contracts                       contracts[]
+  matches_matches_team1_idToteams matches[]                     @relation("matches_team1_idToteams")
+  matches_matches_team2_idToteams matches[]                     @relation("matches_team2_idToteams")
+  performance                     performance[]
+  playerteam                      playerteam[]
+  teamawards                      teamawards[]
+  teamtournamentparticipation     teamtournamentparticipation[]
+}
+
+model teamtournamentparticipation {
+  participation_id Int          @id
+  team_id          Int?
+  tournament_id    Int?
+  teams            teams?       @relation(fields: [team_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "teamtournamentparticipation_ibfk_1")
+  tournaments      tournaments? @relation(fields: [tournament_id], references: [tournament_id], onDelete: NoAction, onUpdate: NoAction, map: "teamtournamentparticipation_ibfk_2")
+
+  @@index([team_id], map: "team_id")
+  @@index([tournament_id], map: "tournament_id")
+}
+
+model tournaments {
+  tournament_id               Int                           @id
+  name                        String?                       @unique(map: "name") @db.VarChar(255)
+  teamtournamentparticipation teamtournamentparticipation[]
+}
